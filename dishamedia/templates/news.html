@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- News Hero Section -->
+<section class="news-hero" style="background: linear-gradient(135deg, rgba(106,17,203,0.1) 0%, rgba(37,117,252,0.1) 100%); padding: 100px 0 60px; position: relative; overflow: hidden;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1;">
+        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 20px; background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Latest News & Updates
+            </h1>
+            <p style="font-size: 1.2rem; color: #4a4a6a; line-height: 1.6; margin-bottom: 30px;">
+                Stay updated with the latest happenings, events, and announcements from Chennamangaloor HSS. 
+                Your one-stop source for all school-related news and information.
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="search-container" style="max-width: 600px; margin: 30px auto 0; position: relative;">
+                <div class="search-wrapper" style="position: relative;">
+                    <input 
+                        type="text" 
+                        id="news-search" 
+                        placeholder="Search news..."
+                        style="
+                            width: 100%;
+                            padding: 14px 20px 14px 50px;
+                            border: 2px solid rgba(106, 17, 203, 0.2);
+                            border-radius: 50px;
+                            font-size: 1rem;
+                            color: #333;
+                            background: white;
+                            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+                            transition: all 0.3s ease;
+                            outline: none;
+                        "
+                    >
+                    <div style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #6a11cb;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="position: absolute; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(106,17,203,0.1) 0%, rgba(255,255,255,0) 70%); top: 10%; left: 10%; animation: float 8s ease-in-out infinite;"></div>
+    <div style="position: absolute; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(37,117,252,0.1) 0%, rgba(255,255,255,0) 70%); bottom: 10%; right: 15%; animation: float 10s ease-in-out infinite reverse;"></div>
+</section>
+
+<!-- News Filter -->
+<section class="news-filter" style="padding: 20px 0; background: #f8f9ff;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div class="filter-buttons" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+            <button class="filter-btn active" data-category="all" style="padding: 8px 20px; background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                All News
+            </button>
+            <button class="filter-btn" data-category="announcements" style="padding: 8px 20px; background: #fff; color: #6a11cb; border: 1px solid #e0e0e0; border-radius: 50px; cursor: pointer; font-weight: 500; transition: all 0.3s ease;">
+                Announcements
+            </button>
+            <button class="filter-btn" data-category="events" style="padding: 8px 20px; background: #fff; color: #6a11cb; border: 1px solid #e0e0e0; border-radius: 50px; cursor: pointer; font-weight: 500; transition: all 0.3s ease;">
+                Events
+            </button>
+            <button class="filter-btn" data-category="achievements" style="padding: 8px 20px; background: #fff; color: #6a11cb; border: 1px solid #e0e0e0; border-radius: 50px; cursor: pointer; font-weight: 500; transition: all 0.3s ease;">
+                Achievements
+            </button>
+            <button class="filter-btn" data-category="academics" style="padding: 8px 20px; background: #fff; color: #6a11cb; border: 1px solid #e0e0e0; border-radius: 50px; cursor: pointer; font-weight: 500; transition: all 0.3s ease;">
+                Academics
+            </button>
+            <button class="filter-btn" data-category="others" style="padding: 8px 20px; background: #fff; color: #6a11cb; border: 1px solid #e0e0e0; border-radius: 50px; cursor: pointer; font-weight: 500; transition: all 0.3s ease;">
+                Others
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- News Grid -->
+<section class="news-grid" style="padding: 60px 0;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div class="news-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; padding: 2rem 0;">
+            {% for news_item in all_news %}
+            <div class="news-card" data-category="{{ news_item.category }}" data-id="{{ news_item.id }}" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease; margin: 0 0 1.5rem;">
+                <div style="height: 200px; overflow: hidden;">
+                    <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                </div>
+                <div style="padding: 1.25rem;">
+                    <button class="delete-btn" data-id="{{ news_item.id }}" data-type="news" style="position: absolute; top: 20px; right: 20px; background: #ff4d4f; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"></path>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                    <h3 style="font-size: 1.5rem; margin: 0 0 15px; color: #2d3748; line-height: 1.4;">
+                        <a href="{% url 'web:news_detail' pk=news_item.pk %}" style="color: inherit; text-decoration: none; transition: color 0.3s ease;">
+                            {{ news_item.title }}
+                        </a>
+                    </h3>
+                    <p style="color: #666; margin: 0 0 1rem; font-size: 0.95rem; line-height: 1.6; word-break: break-word;">
+                        {{ news_item.description|truncatewords:27 }}
+                    </p>
+                    <a href="{% url 'web:news_detail' pk=news_item.pk %}" class="read-more" style="display: inline-flex; align-items: center; color: #6a11cb; font-weight: 600; text-decoration: none; transition: all 0.3s ease;">
+                        Read More
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 8px; transition: transform 0.3s ease;">
+                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Animations */
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    /* Hover Effects */
+    .news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(106, 17, 203, 0.1) !important;
+    }
+    
+    .news-card:hover img {
+        transform: scale(1.05);
+    }
+    
+    .news-card h3 a:hover {
+        color: #6a11cb !important;
+    }
+    
+    .read-more:hover {
+        color: #2575fc !important;
+    }
+    
+    .read-more:hover svg {
+        transform: translateX(5px);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .news-container {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .news-container {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .news-hero h1 {
+            font-size: 2.5rem !important;
+        }
+        
+        .filter-buttons {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .filter-buttons button {
+            padding: 6px 15px !important;
+            font-size: 0.9rem !important;
+            margin: 5px;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all news cards
+    const newsCards = Array.from(document.querySelectorAll('.news-card'));
+    
+    // Show all news cards by default
+    newsCards.forEach(card => {
+        card.style.display = 'block';
+        card.style.animation = 'fadeIn 0.5s ease forwards';
+    });
+    
+    // Filter functionality
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const searchInput = document.getElementById('news-search');
+    
+    // Filter news by category
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Update active button
+            filterButtons.forEach(btn => {
+                btn.style.background = '#fff';
+                btn.style.color = '#6a11cb';
+                btn.style.border = '1px solid #e0e0e0';
+                btn.style.fontWeight = '500';
+            });
+            
+            button.style.background = 'linear-gradient(90deg, #6a11cb 0%, #2575fc 100%)';
+            button.style.color = 'white';
+            button.style.border = 'none';
+            button.style.fontWeight = '600';
+            
+            const category = button.getAttribute('data-category');
+            filterNews(category);
+        });
+    });
+    
+    // Search functionality
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            filterNews('all', searchTerm);
+        });
+    }
+    
+    // Filter news function
+    function filterNews(category = 'all', searchTerm = '') {
+        newsCards.forEach(card => {
+            const cardCategory = card.getAttribute('data-category');
+            const title = card.querySelector('h3').textContent.toLowerCase();
+            const content = card.querySelector('p').textContent.toLowerCase();
+            
+            const matchesCategory = category === 'all' || cardCategory === category;
+            const matchesSearch = searchTerm === '' || 
+                                title.includes(searchTerm) || 
+                                content.includes(searchTerm);
+            
+            if (matchesCategory && matchesSearch) {
+                card.style.display = 'block';
+                card.style.animation = 'fadeIn 0.5s ease forwards';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    // Add fadeIn animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .news-card {
+            animation: fadeIn 0.5s ease forwards;
+            display: block; /* Show all cards by default */
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div class="modal-content" style="background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; position: relative;">
+        <h3 style="margin-top: 0; color: #2d3748;">Delete Confirmation</h3>
+        <p style="color: #666; margin-bottom: 20px;">Please enter the secret code to confirm deletion:</p>
+        <input type="password" id="deleteSecretCode" style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;" placeholder="Enter secret code">
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="confirmDeleteBtn" style="background: #ff4d4f; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: background 0.3s ease;">
+                Delete
+            </button>
+            <button id="cancelDeleteBtn" style="background: #f0f0f0; color: #666; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: background 0.3s ease;">
+                Cancel
+            </button>
+        </div>
+        <p id="deleteError" style="color: #ff4d4f; margin-top: 15px; display: none;">Incorrect secret code. Please try again.</p>
+    </div>
+</div>
+
+<script>
+// Delete functionality
+let currentItemId = null;
+let currentItemType = null;
+const deleteModal = document.getElementById('deleteModal');
+const deleteSecretCode = document.getElementById('deleteSecretCode');
+const deleteError = document.getElementById('deleteError');
+
+// Show delete modal
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentItemId = btn.dataset.id;
+        currentItemType = btn.dataset.type;
+        deleteModal.style.display = 'flex';
+        deleteSecretCode.value = '';
+        deleteError.style.display = 'none';
+    });
+});
+
+// Handle delete confirmation
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    const csrftoken = getCookie('csrftoken');
+    
+    try {
+        const response = await fetch(`/delete-${currentItemType}/${currentItemId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                secret_code: deleteSecretCode.value
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            // Remove the deleted item from the DOM
+            const itemToRemove = document.querySelector(`.news-card[data-category][data-id="${currentItemId}"]`);
+            if (itemToRemove) {
+                itemToRemove.style.opacity = '0';
+                setTimeout(() => itemToRemove.remove(), 300);
+            }
+            deleteModal.style.display = 'none';
+            // Show success message (you can add a toast notification here)
+            alert('Item deleted successfully!');
+        } else {
+            deleteError.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error deleting item:', error);
+        deleteError.textContent = 'An error occurred. Please try again.';
+        deleteError.style.display = 'block';
+    }
+});
+
+// Close modal when clicking cancel or outside the modal
+document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+    deleteModal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === deleteModal) {
+        deleteModal.style.display = 'none';
+    }
+});
+
+// Function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<style>
+.delete-btn {
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+    transform: scale(0.8);
+}
+
+.news-card:hover .delete-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.delete-btn:hover {
+    transform: scale(1.1) !important;
+    background: #ff7875 !important;
+}
+
+.modal-content {
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+{% endblock %}

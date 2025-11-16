@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px; margin: 50px auto; padding: 0 20px;">
+    <h1 style="text-align: center; margin-bottom: 40px; color: #2d3748;">Add New Content</h1>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px;">
+        <a href="{% url 'web:add_news' %}" class="card" style="text-decoration: none; color: inherit;">
+            <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <div style="background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); padding: 30px; text-align: center; color: white;">
+                    <i class="fas fa-newspaper" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h2 style="margin: 0; font-size: 1.8rem;">Add News</h2>
+                </div>
+                <div style="padding: 20px; text-align: center;">
+                    <p>Create and publish new news articles to keep everyone updated with the latest information.</p>
+                </div>
+            </div>
+        </a>
+
+        <a href="{% url 'web:add_gallery' %}" class="card" style="text-decoration: none; color: inherit;">
+            <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 30px; text-align: center; color: white;">
+                    <i class="fas fa-images" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h2 style="margin: 0; font-size: 1.8rem;">Add to Gallery</h2>
+                </div>
+                <div style="padding: 20px; text-align: center;">
+                    <p>Upload new images to the gallery, organized by categories for easy browsing.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- News Detail Section -->
+<section class="news-detail" style="padding: 80px 0; background: #f8f9ff;">
+    <div class="container" style="max-width: 1000px; margin: 0 auto; padding: 0 20px;">
+        <!-- Back Button -->
+        <a href="{% url 'web:news' %}" style="display: inline-flex; align-items: center; color: #6a11cb; font-weight: 600; text-decoration: none; margin-bottom: 30px; transition: all 0.3s ease;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(180deg); margin-right: 8px;">
+                <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back to News
+        </a>
+
+        <!-- News Content -->
+        <article style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 30px rgba(0,0,0,0.05);">
+            <!-- News Image -->
+            <div style="height: 450px; overflow: hidden; background: #f0f0f0;">
+                {% if news.image and news.image.url %}
+                    <img src="{{ news.image.url }}" alt="{{ news.title }}" 
+                        style="width: 100%; height: 100%; object-fit: cover;"
+                        onerror="this.onerror=null; this.parentElement.style.background='#f0f0f0'; this.parentElement.innerHTML='<div style=\'display: flex; align-items: center; justify-content: center; height: 100%; color: #999;\'>Image not found</div>';">
+                {% else %}
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">
+                        No image available
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- News Meta -->
+            <div style="padding: 40px;">
+                <div style="display: flex; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                    <span class="news-category" style="background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); color: white; font-size: 0.8rem; font-weight: 600; padding: 6px 15px; border-radius: 50px; display: inline-block; text-transform: capitalize;">
+                        {{ news.category }}
+                    </span>
+                    <span style="color: #6b7280; font-size: 0.95rem;">
+                        <i class="far fa-calendar" style="margin-right: 5px;"></i> {{ news.created_at|date:"F d, Y" }}
+                    </span>
+                </div>
+
+                <!-- News Title -->
+                <h1 style="font-size: 2.25rem; font-weight: 800; margin: 0 0 20px; color: #2d3748; line-height: 1.3;">
+                    {{ news.title }}
+                </h1>
+
+                <!-- News Content -->
+                <div class="news-content" style="color: #4a4a6a; line-height: 1.8; font-size: 1.1rem; margin-top: 30px;">
+                    {{ news.description|linebreaks }}
+                </div>
+
+                <!-- Share Button -->
+                <div class="share-section" style="margin-top: 50px; padding-top: 30px; border-top: 1px solid #e5e7eb;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 20px; color: #2d3748; display: flex; align-items: center;">
+                        <i class="fas fa-share-alt" style="margin-right: 10px; color: #6a11cb;"></i> Share this news
+                    </h3>
+                    <button id="shareButton" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); color: white; border: none; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(106, 17, 203, 0.2);">
+                        <i class="fas fa-share"></i>
+                        Share
+                    </button>
+                </div>
+                
+                <!-- Notification -->
+                <div id="notification" style="display: none; position: fixed; top: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; animation: slideIn 0.3s ease-out;">
+                    <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+                    Link copied to clipboard!
+                </div>
+                
+                <style>
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    
+                    #shareButton:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 6px 20px rgba(106, 17, 203, 0.3);
+                    }
+                    
+                    #shareButton:active {
+                        transform: translateY(0);
+                    }
+                </style>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const shareButton = document.getElementById('shareButton');
+                        const notification = document.getElementById('notification');
+                        
+                        shareButton.addEventListener('click', async () => {
+                            try {
+                                await navigator.clipboard.writeText(window.location.href);
+                                
+                                // Show notification
+                                notification.style.display = 'flex';
+                                notification.style.animation = 'none';
+                                void notification.offsetWidth; // Trigger reflow
+                                notification.style.animation = 'slideIn 0.3s ease-out';
+                                
+                                // Hide notification after 3 seconds
+                                setTimeout(() => {
+                                    notification.style.animation = 'slideIn 0.3s ease-out reverse';
+                                    setTimeout(() => {
+                                        notification.style.display = 'none';
+                                    }, 300);
+                                }, 3000);
+                                
+                            } catch (err) {
+                                console.error('Failed to copy text: ', err);
+                                alert('Failed to copy link. Please try again.');
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- Related News Section -->
+{% if related_news %}
+<section class="related-news" style="padding: 0 0 80px; background: #f8f9ff;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <h2 style="font-size: 1.75rem; text-align: center; margin-bottom: 40px; color: #2d3748; position: relative; display: inline-block; left: 50%; transform: translateX(-50%);">
+            <span style="position: relative; display: inline-block; padding: 0 20px; background: #f8f9ff; z-index: 1;">You might also like</span>
+            <span style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #e5e7eb; z-index: 0;"></span>
+        </h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-top: 20px;">
+            {% for item in related_news %}
+            <a href="{% url 'web:news_detail' pk=item.pk %}" class="related-news-card" style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; text-decoration: none; display: block;">
+                <div style="height: 180px; overflow: hidden;">
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                </div>
+                <div style="padding: 20px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                        <span style="font-size: 0.8rem; color: #6b7280;">
+                            <i class="far fa-calendar" style="margin-right: 5px;"></i> {{ item.created_at|date:"M d, Y" }}
+                        </span>
+                    </div>
+                    <h3 style="font-size: 1.1rem; margin: 0 0 10px; color: #2d3748; line-height: 1.4; transition: color 0.3s ease;">{{ item.title|truncatewords:10 }}</h3>
+                    <span style="display: inline-flex; align-items: center; color: #6a11cb; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease;">
+                        Read more
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 5px; transition: transform 0.3s ease;">
+                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<style>
+    /* Base styles for the news content */
+    .news-content h2 {
+        font-size: 1.75rem;
+        margin: 2rem 0 1rem;
+        color: #2d3748;
+        line-height: 1.4;
+    }
+    
+    .news-content h3 {
+        font-size: 1.5rem;
+        margin: 1.75rem 0 1rem;
+        color: #2d3748;
+        line-height: 1.4;
+    }
+    
+    .news-content p {
+        margin-bottom: 1.5rem;
+        color: #4a4a6a;
+        line-height: 1.8;
+    }
+    
+    .news-content a {
+        color: #6a11cb;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .news-content a:hover {
+        color: #2575fc;
+        text-decoration: underline;
+    }
+    
+    .news-content ul, .news-content ol {
+        margin-bottom: 1.5rem;
+        padding-left: 1.5rem;
+    }
+    
+    .news-content li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .news-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    /* Hover effects */
+    .related-news-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+    
+    .related-news-card:hover img {
+        transform: scale(1.05);
+    }
+    
+    .related-news-card:hover h3 {
+        color: #6a11cb;
+    }
+    
+    .share-buttons a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .news-detail {
+            padding: 40px 0;
+        }
+        
+        h1 {
+            font-size: 1.75rem !important;
+        }
+        
+        .news-content {
+            font-size: 1rem !important;
+        }
+        
+        .related-news {
+            padding: 0 0 40px;
+        }
+        
+        .related-news h2 {
+            font-size: 1.5rem !important;
+        }
+    }
+</style>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+{% endblock %}

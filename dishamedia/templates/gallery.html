@@ -1,0 +1,656 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Gallery Hero Section -->
+<section class="gallery-hero" style="background: linear-gradient(135deg, rgba(106,17,203,0.1) 0%, rgba(37,117,252,0.1) 100%); padding: 100px 0 60px; position: relative; overflow: hidden;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1;">
+        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 20px; background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                Our Gallery
+            </h1>
+            <p style="font-size: 1.2rem; color: #4a4a6a; line-height: 1.6; margin-bottom: 30px;">
+                Relive the memorable moments from our school events, activities, and celebrations. 
+                A visual journey through the vibrant life at Chennamangaloor HSS.
+            </p>
+        </div>
+    </div>
+    <div style="position: absolute; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(106,17,203,0.1) 0%, rgba(255,255,255,0) 70%); top: 10%; left: 10%; animation: float 8s ease-in-out infinite;"></div>
+    <div style="position: absolute; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(37,117,252,0.1) 0%, rgba(255,255,255,0) 70%); bottom: 10%; right: 15%; animation: float 10s ease-in-out infinite reverse;"></div>
+</section>
+
+<!-- Gallery Filter -->
+<section class="gallery-filter" style="padding: 30px 0; background: #f8f9ff;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <!-- Search Bar -->
+        <div class="search-container" style="max-width: 500px; margin: 0 auto 25px; position: relative;">
+            <input type="text" id="gallery-search" placeholder="Search photos..." style="width: 100%; padding: 12px 20px 12px 45px; border: 2px solid #e0e0e0; border-radius: 50px; font-size: 1rem; color: #333; background: white url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2716%27 height=%2716%27 fill=%27%236a11cb%27 viewBox=%270 0 16 16%27%3E%3Cpath d=%27M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z%27/%3E%3C/svg%3E') no-repeat 15px center; transition: all 0.3s ease; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.05);" />
+        </div>
+        
+        <div class="filter-buttons" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 1rem 0; padding: 0 10px;">
+            <a href="?" class="filter-btn {% if not selected_category %}active{% endif %}" data-filter="all" style="padding: 8px 20px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; text-decoration: none; display: inline-block; {% if not selected_category %}background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); color: white; border: none;{% else %}background: #fff; color: #6a11cb; border: 1px solid #e0e0e0;{% endif %}">
+                All Photos
+            </a>
+            {% for category in categories %}
+            <button class="filter-btn" data-category="{{ category.0 }}" style="padding: 6px 16px; border: 1px solid #e0e0e0; background: white; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; font-size: 0.85rem; color: #6a11cb; margin: 2px;" {% if selected_category == category.0|stringformat:'s' %}style="background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); color: white; border: none; padding: 6px 16px;"{% endif %}>
+                {{ category.1 }}
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Grid -->
+<section class="gallery-grid" style="padding: 40px 0 40px; background: #fff;">
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 0 20px;">
+        {% if gallery_items %}
+        <div class="gallery-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; padding: 1.5rem 0;">
+            {% for item in gallery_items %}
+            <div class="gallery-item" style="position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 0 0 1rem;">
+                <button class="delete-btn" data-id="{{ item.id }}" data-type="gallery" style="position: absolute; top: 15px; right: 15px; background: #ff4d4f; color: white; border: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; z-index: 2; opacity: 0; transform: scale(0.8);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </button>
+                <div style="width: 100%; height: 300px; overflow: hidden;">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.title|default:'' }}" class="gallery-img" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease;">
+                    {% else %}
+                    <div style="width: 100%; height: 100%; background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: #999;">
+                        <span>No Image</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="gallery-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%); opacity: 0; transition: opacity 0.3s ease; display: flex; flex-direction: column; justify-content: flex-end; padding: 20px; color: white;">
+                    {% if item.title %}<h3 style="margin: 0 0 10px; font-size: 1.2rem; transform: translateY(20px); transition: transform 0.3s ease;">{{ item.title }}</h3>{% endif %}
+                    <p style="margin: 0; font-size: 0.9rem; transform: translateY(30px); transition: transform 0.3s ease 0.1s; opacity: 0.9;">
+                        {{ item.created_at|date:"F j, Y" }}
+                        {% if item.is_featured %}<span style="display: inline-block; margin-left: 8px; background: rgba(255, 215, 0, 0.8); color: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 600;">Featured</span>{% endif %}
+                    </p>
+                </div>
+                <div style="padding: 15px; text-align: center; background: #fff; border-top: 1px solid #f0f0f0;">
+                    <h3 style="margin: 0; font-size: 1rem; color: #333; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ item.title|default:"Untitled" }}
+                    </h3>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if gallery_items.has_other_pages %}
+        <div class="pagination" style="margin-top: 40px; display: flex; justify-content: center; gap: 10px;">
+            {% if gallery_items.has_previous %}
+                <a href="?page={{ gallery_items.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" style="padding: 8px 16px; border: 1px solid #e0e0e0; border-radius: 4px; text-decoration: none; color: #6a11cb; transition: all 0.3s ease;">&laquo; Previous</a>
+            {% else %}
+                <span style="padding: 8px 16px; border: 1px solid #e0e0e0; border-radius: 4px; color: #999; opacity: 0.7;">&laquo; Previous</span>
+            {% endif %}
+
+            {% for i in gallery_items.paginator.page_range %}
+                {% if gallery_items.number == i %}
+                    <span class="current" style="padding: 8px 16px; background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%); color: white; border-radius: 4px;">{{ i }}</span>
+                {% else %}
+                    <a href="?page={{ i }}{% if selected_category %}&category={{ selected_category }}{% endif %}" style="padding: 8px 16px; border: 1px solid #e0e0e0; border-radius: 4px; text-decoration: none; color: #6a11cb; transition: all 0.3s ease;">{{ i }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if gallery_items.has_next %}
+                <a href="?page={{ gallery_items.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}" style="padding: 8px 16px; border: 1px solid #e0e0e0; border-radius: 4px; text-decoration: none; color: #6a11cb; transition: all 0.3s ease;">Next &raquo;</a>
+            {% else %}
+                <span style="padding: 8px 16px; border: 1px solid #e0e0e0; border-radius: 4px; color: #999; opacity: 0.7;">Next &raquo;</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <div style="text-align: center; padding: 60px 0;">
+            <div style="font-size: 5rem; margin-bottom: 20px; color: #e0e0e0;">
+                <i class="far fa-images"></i>
+            </div>
+            <h3 style="color: #666; margin-bottom: 10px;">No Gallery Items Found</h3>
+            <p style="color: #999; max-width: 500px; margin: 0 auto;">
+                {% if selected_category %}
+                    No images found in the {{ selected_category }} category. Please check back later or browse other categories.
+                {% else %}
+                    No gallery items have been added yet. Please check back soon for updates.
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="lightbox" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); z-index: 1000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.4s ease; cursor: zoom-out;">
+    <span class="close-btn" style="position: fixed; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: 300; cursor: pointer; z-index: 1001; text-shadow: 0 2px 10px rgba(0,0,0,0.5); transition: transform 0.2s ease;">&times;</span>
+    <div class="lightbox-content" style="position: relative; max-width: 90%; max-height: 90%; text-align: center;">
+        <div style="position: relative; display: inline-block; max-width: 90vw; max-height: 90vh;">
+            <div class="lightbox-loader" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">
+                <div style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            </div>
+            <img id="lightbox-img" src="" alt="" style="max-width: 100%; max-height: 80vh; display: block; margin: 0 auto; border-radius: 8px; box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5); opacity: 0; transition: opacity 0.3s ease; position: relative; z-index: 1;">
+        </div>
+        <div class="lightbox-caption" style="color: white; text-align: center; margin-top: 15px; font-size: 1.2rem; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8);"></div>
+    </div>
+    <button class="lightbox-nav prev" style="position: fixed; left: 30px; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.15); border: none; color: white; width: 50px; height: 80px; border-radius: 4px; font-size: 24px; cursor: pointer; backdrop-filter: blur(5px); transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; opacity: 0.8; padding: 0;">
+        <span style="transform: translateX(-2px);">❮</span>
+    </button>
+    <button class="lightbox-nav next" style="position: fixed; right: 30px; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.15); border: none; color: white; width: 50px; height: 80px; border-radius: 4px; font-size: 24px; cursor: pointer; backdrop-filter: blur(5px); transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; opacity: 0.8; padding: 0;">
+        <span style="transform: translateX(2px);">❯</span>
+    </button>
+</div>
+
+<style>
+    /* Animation Keyframes */
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Gallery Item Hover Effects */
+    .gallery-item {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .gallery-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .gallery-item:hover .gallery-img {
+        transform: scale(1.05);
+    }
+
+    .gallery-item:hover .gallery-overlay {
+        opacity: 1;
+    }
+
+    .gallery-item:hover .gallery-overlay h3,
+    .gallery-item:hover .gallery-overlay p {
+        transform: translateY(0);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .gallery-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .gallery-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .gallery-hero h1 {
+            font-size: 2.5rem !important;
+        }
+        
+        .filter-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .filter-buttons button {
+            width: 80%;
+            margin-bottom: 10px;
+        }
+    }
+
+    /* Lightbox Animation */
+    .lightbox.show {
+        display: flex !important;
+        opacity: 1;
+    }
+    
+    /* Ensure proper spacing for lightbox content */
+    .lightbox-content {
+        margin: 20px 0;
+    }
+
+    /* Filter Button Active State */
+    .filter-btn.active {
+        background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%) !important;
+        color: white !important;
+        border-color: transparent !important;
+        box-shadow: 0 4px 15px rgba(106, 17, 203, 0.2);
+    }
+    
+    /* Ensure proper spacing for pagination */
+    .pagination {
+        padding: 20px 0;
+    }
+    
+    .pagination a, 
+    .pagination span {
+        margin: 0 5px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        padding: 1.5rem 0;
+    }
+    
+    @media (max-width: 768px) {
+        .gallery-container {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            padding: 1rem 0;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .gallery-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    // Gallery Filtering
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const searchInput = document.getElementById('gallery-search');
+        let activeFilter = '{{ selected_category|default:"all" }}';
+        
+        // Initialize active state from server-side
+        filterButtons.forEach(button => {
+            const filter = button.getAttribute('data-filter');
+            if ((filter === 'all' && !activeFilter) || filter === activeFilter) {
+                button.classList.add('active');
+                button.style.background = 'linear-gradient(90deg, #6a11cb 0%, #2575fc 100%)';
+                button.style.color = 'white';
+                button.style.border = 'none';
+            } else {
+                button.classList.remove('active');
+                button.style.background = '#fff';
+                button.style.color = '#6a11cb';
+                button.style.border = '1px solid #e0e0e0';
+            }
+        });
+        
+        // Search function
+        function filterBySearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            galleryItems.forEach(item => {
+                const title = item.querySelector('h3').textContent.toLowerCase();
+                const category = item.getAttribute('data-category');
+                const matchesSearch = title.includes(searchTerm);
+                const matchesFilter = activeFilter === 'all' || category === activeFilter;
+                
+                if (matchesSearch && matchesFilter) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // Search input event listener
+        searchInput.addEventListener('input', filterBySearch);
+        
+        // Filter function
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button styles
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.background = '#fff';
+                    btn.style.color = '#6a11cb';
+                    btn.style.border = '1px solid #e0e0e0';
+                });
+                
+                // Set active button styles
+                button.classList.add('active');
+                button.style.background = 'linear-gradient(90deg, #6a11cb 0%, #2575fc 100%)';
+                button.style.color = 'white';
+                button.style.border = 'none';
+                
+                activeFilter = button.getAttribute('data-filter');
+                
+                // Trigger search filter to update results
+                filterBySearch();
+            });
+        });
+        
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxLoader = document.querySelector('.lightbox-loader');
+        const lightboxCaption = document.querySelector('.lightbox-caption');
+        const closeBtn = document.querySelector('.close-btn');
+        const prevBtn = document.querySelector('.lightbox-nav.prev');
+        const nextBtn = document.querySelector('.lightbox-nav.next');
+        let currentIndex = 0;
+        let items = [];
+        let isAnimating = false;
+        
+        // Initialize gallery items
+        function initGallery() {
+            items = Array.from(document.querySelectorAll('.gallery-item'));
+            
+            items.forEach((item, index) => {
+                item.addEventListener('click', () => openLightbox(index));
+            });
+        }
+        
+        // Preload image
+        function preloadImage(src, callback) {
+            const img = new Image();
+            img.onload = () => callback(img);
+            img.onerror = () => callback(null);
+            img.src = src;
+        }
+        
+        // Show loading indicator
+        function showLoader(show) {
+            lightboxLoader.style.display = show ? 'block' : 'none';
+            lightboxImg.style.opacity = show ? '0' : '1';
+        }
+        
+        // Open lightbox
+        function openLightbox(index) {
+            currentIndex = index;
+            updateLightbox();
+            lightbox.style.display = 'flex';
+            setTimeout(() => {
+                lightbox.style.opacity = '1';
+                document.body.style.overflow = 'hidden';
+            }, 10);
+        }
+        
+        // Update lightbox content
+        function updateLightbox() {
+            if (isAnimating) return;
+            isAnimating = true;
+            
+            const item = items[currentIndex];
+            const imgElement = item.querySelector('img');
+            const imgSrc = imgElement.src;
+            const title = item.querySelector('h3').textContent;
+            
+            // Show loader and hide current image
+            showLoader(true);
+            
+            // Preload the new image
+            preloadImage(imgSrc, (img) => {
+                if (img) {
+                    // Update image source and show it when loaded
+                    lightboxImg.onload = () => {
+                        lightboxImg.style.opacity = '1';
+                        showLoader(false);
+                        isAnimating = false;
+                    };
+                    lightboxImg.src = imgSrc;
+                    lightboxCaption.textContent = title;
+                } else {
+                    // Handle image loading error
+                    showLoader(false);
+                    isAnimating = false;
+                    console.error('Error loading image:', imgSrc);
+                }
+            });
+        }
+        
+        // Close lightbox
+        function closeLightbox() {
+            lightbox.style.opacity = '0';
+            setTimeout(() => {
+                lightbox.style.display = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+        
+        // Navigation
+        function navigate(direction) {
+            if (isAnimating) return;
+            
+            if (direction === 'prev') {
+                currentIndex = (currentIndex - 1 + items.length) % items.length;
+            } else {
+                currentIndex = (currentIndex + 1) % items.length;
+            }
+            updateLightbox();
+        }
+        
+        // Event listeners with hover effects
+        closeBtn.addEventListener('mouseenter', () => closeBtn.style.transform = 'scale(1.2)');
+        closeBtn.addEventListener('mouseleave', () => closeBtn.style.transform = 'scale(1)');
+        closeBtn.addEventListener('click', closeLightbox);
+        
+        [prevBtn, nextBtn].forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.opacity = '1';
+                btn.style.transform = `translateY(-50%) ${btn === prevBtn ? 'translateX(-5px)' : 'translateX(5px)'}`;
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.opacity = '0.8';
+                btn.style.transform = 'translateY(-50%)';
+            });
+        });
+        
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navigate('prev');
+        });
+        
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navigate('next');
+        });
+        
+        // Close when clicking outside the image
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox || e.target.classList.contains('lightbox-content')) {
+                closeLightbox();
+            }
+        });
+        
+        // Prevent clicks on the image from closing the lightbox
+        lightboxImg.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('show') && lightbox.style.display !== 'flex') return;
+            
+            e.preventDefault();
+            
+            switch(e.key) {
+                case 'Escape':
+                    closeLightbox();
+                    break;
+                case 'ArrowLeft':
+                    navigate('prev');
+                    break;
+                case 'ArrowRight':
+                    navigate('next');
+                    break;
+            }
+        });
+        
+        // Touch events for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        lightbox.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        lightbox.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+        
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const swipeDiff = touchStartX - touchEndX;
+            
+            if (Math.abs(swipeDiff) > swipeThreshold) {
+                if (swipeDiff > 0) {
+                    navigate('next');
+                } else {
+                    navigate('prev');
+                }
+            }
+        }
+        
+        // Initialize the gallery
+        initGallery();
+        
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && lightbox.style.display === 'flex') {
+                closeLightbox();
+            }
+        });
+    });
+</script>
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div class="modal-content" style="background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center; position: relative;">
+        <h3 style="margin-top: 0; color: #2d3748;">Delete Confirmation</h3>
+        <p style="color: #666; margin-bottom: 20px;">Please enter the secret code to confirm deletion:</p>
+        <input type="password" id="deleteSecretCode" style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem;" placeholder="Enter secret code">
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="confirmDeleteBtn" style="background: #ff4d4f; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: background 0.3s ease;">
+                Delete
+            </button>
+            <button id="cancelDeleteBtn" style="background: #f0f0f0; color: #666; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: background 0.3s ease;">
+                Cancel
+            </button>
+        </div>
+        <p id="deleteError" style="color: #ff4d4f; margin-top: 15px; display: none;">Incorrect secret code. Please try again.</p>
+    </div>
+</div>
+
+<script>
+// Delete functionality
+let currentItemId = null;
+let currentItemType = null;
+const deleteModal = document.getElementById('deleteModal');
+const deleteSecretCode = document.getElementById('deleteSecretCode');
+const deleteError = document.getElementById('deleteError');
+
+// Show delete modal
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        currentItemId = btn.dataset.id;
+        currentItemType = btn.dataset.type;
+        deleteModal.style.display = 'flex';
+        deleteSecretCode.value = '';
+        deleteError.style.display = 'none';
+    });
+});
+
+// Handle delete confirmation
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    const csrftoken = getCookie('csrftoken');
+    
+    try {
+        const response = await fetch(`/delete-${currentItemType}/${currentItemId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({
+                secret_code: deleteSecretCode.value
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            // Remove the deleted item from the DOM
+            const item = document.querySelector(`[data-id="${currentItemId}"]`);
+            if (item) {
+                item.style.opacity = '0';
+                setTimeout(() => item.remove(), 300);
+            }
+            deleteModal.style.display = 'none';
+            // Show success message
+            alert('Item deleted successfully!');
+        } else {
+            deleteError.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error deleting item:', error);
+        deleteError.textContent = 'An error occurred. Please try again.';
+        deleteError.style.display = 'block';
+    }
+});
+
+// Close modal when clicking cancel or outside the modal
+document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+    deleteModal.style.display = 'none';
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === deleteModal) {
+        deleteModal.style.display = 'none';
+    }
+});
+
+// Function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<style>
+.gallery-item {
+    position: relative;
+}
+
+.gallery-item:hover .delete-btn {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+.delete-btn:hover {
+    transform: scale(1.1) !important;
+    background: #ff7875 !important;
+}
+
+.modal-content {
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Smooth fade out animation for deleted items */
+.gallery-item {
+    transition: opacity 0.3s ease;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static '/static/css/app.css' %}">
+  <title>Disha News Portal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    /* Navbar */
+    nav {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      padding: 15px 8%;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #004aad;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+      list-style: none;
+    }
+
+    .nav-links li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .nav-links li a:hover {
+      color: #004aad;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: #f1f1f1;
+      border-radius: 20px;
+      padding: 5px 10px;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      background: none;
+      padding: 5px;
+    }
+
+    .contact-btn {
+      background: #004aad;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .contact-btn:hover {
+      background: #00347a;
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 60px 8%;
+      background: linear-gradient(135deg, #004aad, #5793ff);
+      color: #fff;
+      flex-wrap: wrap;
+    }
+
+    .hero-text {
+      flex: 1 1 45%;
+      max-width: 550px;
+    }
+
+    .hero-text h1 {
+      font-size: 42px;
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+
+    .hero-text p {
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .hero-buttons button {
+      border: none;
+      margin-right: 10px;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .hero-buttons .latest {
+      background: #fff;
+      color: #004aad;
+    }
+
+    .hero-buttons .about {
+      background: transparent;
+      border: 2px solid #fff;
+      color: #fff;
+    }
+
+    .hero-image {
+      flex: 1 1 45%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .hero-image img {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Breaking News */
+    .breaking {
+      background: #e01717;
+      color: white;
+      padding: 10px 8%;
+      font-weight: 500;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .breaking span {
+      white-space: nowrap;
+      display: inline-block;
+      animation: scroll 20s linear infinite;
+    }
+
+    @keyframes scroll {
+      from { transform: translateX(100%); }
+      to { transform: translateX(-100%); }
+    }
+
+    /* Featured Stories */
+    .featured {
+      padding: 60px 8%;
+      background: #fff;
+    }
+
+    .featured h2 {
+      margin-bottom: 30px;
+      font-size: 26px;
+      color: #004aad;
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .story {
+      background: #f5f5f5;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: 0.3s;
+    }
+
+    .story:hover {
+      transform: translateY(-5px);
+    }
+
+    .story img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .story p {
+      padding: 15px;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+    }
+    h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+}
+
+/* --- News Categories --- */
+.news-categories {
+  background: #fff;
+  padding: 50px 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  margin-bottom: 50px;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+.category-box {
+  text-align: center;
+  border-radius: 12px;
+  padding: 25px;
+  width: 180px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.category-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.category-box .icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.category-box h3 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.category-box p {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* Category colors */
+.blue { background: #e9f1ff; }
+.green { background: #e5faeb; }
+.purple { background: #f1e9ff; }
+.yellow { background: #fff8e5; }
+.violet { background: #f3e9ff; }
+.pink { background: #fde6ef; }
+
+/* --- Recent News --- */
+.recent-news {
+  background: #fff;
+  padding: 50px 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.recent-news .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.recent-news .filters button {
+  border: none;
+  background: #f1f1f1;
+  color: #333;
+  padding: 8px 15px;
+  border-radius: 8px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.recent-news .filters button.active,
+.recent-news .filters button:hover {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.news-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  padding: 20px;
+  transition: 0.3s;
+}
+
+.news-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.news-card .tag {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.tag.library { background: #007bff; }
+.tag.arts { background: #ff4081; }
+.tag.health { background: #28a745; }
+
+.news-card h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.news-card p {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.news-card a {
+  color: #0d6efd;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.news-card a:hover {
+  text-decoration: underline;
+}
+
+
+/* --- Subscribe Section --- */
+.subscribe-section {
+  background: #1877f2;
+  color: #fff;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.subscribe-container .icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.subscribe-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.subscribe-container p {
+  max-width: 600px;
+  margin: 0 auto 25px;
+  line-height: 1.6;
+}
+
+.subscribe-form {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.subscribe-form input {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  width: 280px;
+  font-size: 1rem;
+}
+
+.subscribe-form button {
+  background: #ffb100;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.subscribe-form button:hover {
+  background: #e6a100;
+}
+
+/* --- Footer --- */
+.footer {
+  background: #0d1117;
+  color: #ccc;
+  padding: 60px 20px 20px;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-column h3 {
+  color: #fff;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}
+
+.footer-column h4 {
+  color: #fff;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.footer-column p {
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.footer-column ul {
+  list-style: none;
+}
+
+.footer-column ul li {
+  margin-bottom: 8px;
+}
+
+.footer-column ul li a {
+  text-decoration: none;
+  color: #bbb;
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+
+.footer-column ul li a:hover {
+  color: #fff;
+}
+
+.social-icons {
+  margin-top: 10px;
+}
+
+.social-icons a {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  transition: 0.3s;
+}
+
+.social-icons a:hover {
+  color: #ffb100;
+}
+
+.footer-bottom {
+  text-align: center;
+  border-top: 1px solid #222;
+  padding-top: 15px;
+  margin-top: 40px;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .subscribe-form {
+    flex-direction: column;
+  }
+
+  .subscribe-form input {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .footer-container {
+    text-align: center;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">Disha</div>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">News</a></li>
+      <li><a href="#">Events</a></li>
+      <li><a href="#">Sports</a></li>
+      <li><a href="#">Academics</a></li>
+      <li><a href="#">Gallery</a></li>
+    </ul>
+    <div class="search-box">
+      <input type="text" placeholder="Search news..." />
+    </div>
+    <button class="contact-btn">Contact Us</button>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h1>WHERE IDEAS TAKE SHAPE</h1>
+      <p>
+        Our school newsroom is more than just headlines — it’s a space where imagination meets information.
+        Every article, interview, and story is crafted by students who love to explore, question, and share
+        the world around them.
+      </p>
+      <div class="hero-buttons">
+        <button class="latest">Latest News</button>
+        <button class="about">About Us</button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238" alt="School Building" />
+    </div>
+  </section>
+
+  <div class="breaking">
+    <span>📢 Our School wins Sub-district Science Fair 2025 • Annual Sports Day on March 15th • New Computer Lab inauguration soon!</span>
+  </div>
+
+  <section class="featured">
+    <h2>Featured Stories</h2>
+    <div class="story-grid">
+      <div class="story">
+        <img src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238" alt="Story 1" />
+        <p>Students explore innovation at the annual science fair.</p>
+      </div>
+      <div class="story">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c" alt="Story 2" />
+        <p>Highlights from this year’s sports day celebrations.</p>
+      </div>
+      <div class="story">
+        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b" alt="Story 3" />
+        <p>New learning spaces open in our campus for creative minds.</p>
+      </div>
+    </div>
+  </section>
+   <section class="news-categories">
+    <h2>News Categories</h2>
+    <div class="category-grid">
+      <div class="category-box blue">
+        <div class="icon">📘</div>
+        <h3>Academics</h3>
+        <p>24 Articles</p>
+      </div>
+      <div class="category-box green">
+        <div class="icon">⚽</div>
+        <h3>Sports</h3>
+        <p>18 Articles</p>
+      </div>
+      <div class="category-box purple">
+        <div class="icon">📅</div>
+        <h3>Events</h3>
+        <p>31 Articles</p>
+      </div>
+      <div class="category-box yellow">
+        <div class="icon">🏆</div>
+        <h3>Achievements</h3>
+        <p>15 Articles</p>
+      </div>
+      <div class="category-box violet">
+        <div class="icon">👩‍🏫</div>
+        <h3>Teachers Corner</h3>
+        <p>31 Articles</p>
+      </div>
+      <div class="category-box pink">
+        <div class="icon">👩‍🎓</div>
+        <h3>Students Corner</h3>
+        <p>18 Articles</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent News Section -->
+  <section class="recent-news">
+    <div class="header">
+      <h2>Recent News</h2>
+      <div class="filters">
+        <button class="active">All</button>
+        <button>Today</button>
+        <button>This Week</button>
+      </div>
+    </div>
+
+    <div class="news-grid">
+      <div class="news-card">
+        <span class="tag library">Library</span>
+        <h3>New Digital Library Section Opens</h3>
+        <p>Students now have access to thousands of digital books and resources in our newly renovated library.</p>
+        <a href="#">Read More</a>
+      </div>
+
+      <div class="news-card">
+        <span class="tag arts">Arts</span>
+        <h3>Student Art Exhibition Success</h3>
+        <p>Our annual art exhibition showcased incredible talent from students across all grade levels.</p>
+        <a href="#">Read More</a>
+      </div>
+
+      <div class="news-card">
+        <span class="tag health">Health</span>
+        <h3>Healthy Meal Program Launch</h3>
+        <p>New nutritious meal options introduced in our cafeteria to promote student health and wellness.</p>
+        <a href="#">Read More</a>
+      </div>
+    </div>
+  </section>
+  <!-- Subscription Section -->
+  <section class="subscribe-section">
+    <div class="subscribe-container">
+      <div class="icon">📧</div>
+      <h2>Stay Updated with Disha News</h2>
+      <p>Get the latest school news, events, and announcements delivered directly from our website.</p>
+      <form id="subscribeForm" class="subscribe-form">
+        <input type="email" id="emailInput" placeholder="Enter your email address" required />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div class="footer-container">
+
+      <div class="footer-column about">
+        <h3>Disha</h3>
+        <p>Your trusted source for school news and updates. Connecting our community through information.</p>
+        <div class="social-icons">
+          <a href="#"><i>🌐</i></a>
+          <a href="#"><i>🐦</i></a>
+          <a href="#"><i>📸</i></a>
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#">Latest News</a></li>
+          <li><a href="#">Events</a></li>
+          <li><a href="#">Sports</a></li>
+          <li><a href="#">Academics</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Categories</h4>
+        <ul>
+          <li><a href="#">Achievements</a></li>
+          <li><a href="#">Technology</a></li>
+          <li><a href="#">Arts & Culture</a></li>
+          <li><a href="#">Health & Wellness</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column contact">
+        <h4>Contact Info</h4>
+        <p>📞 +91 9847219759</p>
+        <p>✉️ dishahmedia@gmail.com</p>
+        <p>📍 Chermanangallur / Mukkom, CLT</p>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2024 Disha School News. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="footer.js"></script>
+</body>
+</html>
